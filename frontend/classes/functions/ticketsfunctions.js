@@ -60,7 +60,7 @@ export function setfunctions_TK(){
 
   if(window.currentUserData.register_type == 'employee') {
     document.getElementById('Request_ticket').addEventListener('click',() => {
-      fetch('http://localhost:3000/find', {
+      fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -124,7 +124,7 @@ export function setFunctionsTK_Details(){
 
     const ticketId = window.TKType.ticketId;    
     
-    fetch('http://localhost:3000/table_states', {
+    fetch('http://localhost:3001/table_states', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tableid: 'tickets_details', type: 'delete', query: {ticketId: ticketId}})
@@ -136,7 +136,7 @@ export function setFunctionsTK_Details(){
       }
     });
     
-    fetch('http://localhost:3000/table_states', {
+    fetch('http://localhost:3001/table_states', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tableid: 'tickets', type: 'delete', query: {ticketId: ticketId}})
@@ -173,7 +173,7 @@ export function setFunctionsTK_Details(){
       details: noteContent
     };    
     
-    fetch('http://localhost:3000/table_states', {
+    fetch('http://localhost:3001/table_states', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tableid: 'tickets_details', type: 'insert', data: noteData })
@@ -196,7 +196,7 @@ export function setFunctionsTK_Details(){
                         query:{ticketId: ticketId},
                         data: {updateDate: today(), }}        
 
-    fetch('http://localhost:3000/table_states', {
+    fetch('http://localhost:3001/table_states', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },        
     body: JSON.stringify(JsonBodyData)
@@ -226,7 +226,7 @@ export function fillTickets_Filters(){
   standartOptionCompanys.textContent = 'Todos(as)';
   companys_select.appendChild(standartOptionCompanys);
 
-  fetch('http://localhost:3000/find', {
+  fetch('http://localhost:3001/find', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -249,7 +249,7 @@ export function fillTickets_Filters(){
       workers_select.value = window.currentUserData.user;          
   })
 
-  fetch('http://localhost:3000/find', {
+  fetch('http://localhost:3001/find', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -301,7 +301,7 @@ export function fillTickets_Filters(){
 export function fillTickets(){
   document.getElementById('ticket_list').innerHTML = "";
 
-  fetch('http://localhost:3000/find', {
+  fetch('http://localhost:3001/find', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -388,7 +388,7 @@ export function fillTickets_Details(ticketId){
     const WorkerId    = document.getElementById('Properties_worker').value;
     const StatusId    = document.getElementById('properties_Status').value;
 
-    fetch('http://localhost:3000/table_states', {
+    fetch('http://localhost:3001/table_states', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },        
       body: JSON.stringify({tableid: 'tickets',
@@ -411,7 +411,7 @@ export function fillTickets_Details(ticketId){
   if(ticketId.assigned_worker == "" || ticketId.assigned_worker == 'blank' || ticketId.assigned_worker == null){
     const workerSelect = document.getElementById('Properties_worker')
 
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'
@@ -434,7 +434,7 @@ export function fillTickets_Details(ticketId){
 
   document.getElementById('MainDetails').innerHTML = "";
   
-  fetch('http://localhost:3000/find', {
+  fetch('http://localhost:3001/find', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -495,7 +495,7 @@ export function canCloseNewTicket(){
 
     try
     {
-      fetch('http://localhost:3000/table_states', {
+      fetch('http://localhost:3001/table_states', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },        
         body: JSON.stringify(JsonBodyData)
@@ -543,7 +543,7 @@ async function newTicket(){
     toolbar: 'undo redo | bold italic underline | bullist numlist | link | code | help',
   });
 
-  fetch('http://localhost:3000/find', {
+  fetch('http://localhost:3001/find', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -564,7 +564,7 @@ async function newTicket(){
     })    
   })
 
-  fetch('http://localhost:3000/find', {
+  fetch('http://localhost:3001/find', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
@@ -788,7 +788,7 @@ async function createNoteRow(author, time, content, Id, by_user) {
                         query:{Recid: Id},
                         data: {details: editor.getContent({ format: 'code' })}}        
 
-    fetch('http://localhost:3000/table_states', {
+    fetch('http://localhost:3001/table_states', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },        
     body: JSON.stringify(JsonBodyData)
@@ -801,7 +801,7 @@ async function createNoteRow(author, time, content, Id, by_user) {
     const confirmed = await confirmModal('Tem certeza que deseja excluir esta nota do ticket?');
     if (!confirmed) return;
 
-    const res = await fetch('http://localhost:3000/table_states', {
+    const res = await fetch('http://localhost:3001/table_states', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tableid: 'tickets_details', type: 'delete', query: { Recid: Id } })

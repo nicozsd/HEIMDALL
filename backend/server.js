@@ -267,10 +267,12 @@ app.post('/get_existlogin', async (req,res) => {
         u.email?.toString().trim()      === login
     );    
 
+    /*
     if (!refuser || refuser.register_type != type) {
         const logInfo = (type + " não localizado.");        
         res.json({success: false, infolog: logInfo});             
-    }                
+    } 
+    */               
 
     if (refuser.acess_key.toString().trim() === password.toString().trim())                  
         res.json({success: true, user: refuser});     
@@ -347,6 +349,6 @@ app.post('/table_States', async (req, res) => {
     res.json({ success: true, message: 'Registro adicionado/editado/deletado com sucesso!' });
 });
 
-app.listen(3000, () => {
-    console.log('Servidor rodando em http://localhost:3000');
+app.listen(3001, () => {
+    console.log('Servidor rodando em http://localhost:3001');
 });

@@ -53,7 +53,7 @@ export function fillProfile(){
 
             confirmModal('atualizar seu cadastro pode afetar seu proximo login, deseja continuar?').then((result) => {
                 if(result){
-                    fetch('http://localhost:3000/table_States', {
+                    fetch('http://localhost:3001/table_States', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(JsonBodyData)
@@ -121,7 +121,7 @@ export function fillCompanys(ref_company = ''){
 
     companyPF.appendChild(InitOption);
 
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

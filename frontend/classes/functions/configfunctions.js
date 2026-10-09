@@ -28,7 +28,7 @@ export function canCloseWindow() {
 
         const JsonBodyData = {tableid: 'parameters',type: 'update',data: UpdateData,query: {index: 0}}
                         
-        fetch('http://localhost:3000/table_States', {
+        fetch('http://localhost:3001/table_States', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(JsonBodyData)
@@ -62,7 +62,7 @@ export function setconfigfunctions(){
             jsondata = {tableid: 'tickets',const: TKCode.value ,code: TKCount.value.replace(/0/g, "#")}
         }
         
-        fetch('http://localhost:3000/get_nextnum', {
+        fetch('http://localhost:3001/get_nextnum', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(jsondata)
@@ -95,7 +95,7 @@ export function setconfigfunctions(){
     document.querySelectorAll('.digit_count').forEach(digitInput => {
         const DigitInputType = digitInput.id; 
     
-        fetch('http://localhost:3000/find', {
+        fetch('http://localhost:3001/find', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ tableid: 'parameters' })
@@ -145,7 +145,7 @@ export function setconfigfunctions(){
         
         const row = document.createElement('div');        
         
-        fetch('http://localhost:3000/get_nextRecid', {
+        fetch('http://localhost:3001/get_nextRecid', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },        
             body: JSON.stringify({tableid: 'company'})
@@ -154,7 +154,7 @@ export function setconfigfunctions(){
         .then(data => {
             const next_id = data.nextRecid
 
-            fetch('http://localhost:3000/table_states', {
+            fetch('http://localhost:3001/table_states', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },        
                 body: JSON.stringify({tableid: 'company',
@@ -176,7 +176,7 @@ export function setconfigfunctions(){
 
             const selection_field = row.querySelector('.custom_select_CP')     
 
-            fetch('http://localhost:3000/find', {
+            fetch('http://localhost:3001/find', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -220,7 +220,7 @@ export function setconfigfunctions(){
         confirmModal(`Deseja realmente deletar?`).then((confirmed) => {
             if (confirmed) {                 
                 const JsonBodyData = {tableid: 'company',type: 'delete',data:'',query: {Recid: parseInt(companyids)}}
-                fetch('http://localhost:3000/table_States', {
+                fetch('http://localhost:3001/table_States', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(JsonBodyData)
@@ -247,7 +247,7 @@ export function setconfigfunctions(){
         
         const next_id = await getnextRecid('projects');                
 
-        fetch('http://localhost:3000/table_states', {
+        fetch('http://localhost:3001/table_states', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },        
             body: JSON.stringify({tableid: 'projects',
@@ -269,7 +269,7 @@ export function setconfigfunctions(){
 
         const selection_field = row.querySelector('.custom_select_PJ')    
 
-        fetch('http://localhost:3000/find', {
+        fetch('http://localhost:3001/find', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -293,7 +293,7 @@ export function setconfigfunctions(){
             const checkbox = row.querySelector('.proj_checkbox');
             checkbox.checked = !checkbox.checked;
 
-            fetch('http://localhost:3000/find', {
+            fetch('http://localhost:3001/find', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -332,7 +332,7 @@ export function setconfigfunctions(){
                 document.querySelector('.projtask_div').classList.remove('active');
 
                 // Primeiro, buscamos o projId relacionado ao Recid
-                fetch('http://localhost:3000/find', {
+                fetch('http://localhost:3001/find', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tableid: 'projects', query: { Recid: parseInt(projs_ids) } })
@@ -341,7 +341,7 @@ export function setconfigfunctions(){
                 .then(data => {
                     const projIdToDelete = data.json[0]?.projId;
 
-                    const deleteTasks = fetch('http://localhost:3000/table_States', {
+                    const deleteTasks = fetch('http://localhost:3001/table_States', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -352,7 +352,7 @@ export function setconfigfunctions(){
                         })
                     });
 
-                    const deleteProject = fetch('http://localhost:3000/table_States', {
+                    const deleteProject = fetch('http://localhost:3001/table_States', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -384,7 +384,7 @@ export function setconfigfunctions(){
         
         const next_id = await getnextRecid('projects_tasks');                
 
-        fetch('http://localhost:3000/table_states', {
+        fetch('http://localhost:3001/table_states', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },        
             body: JSON.stringify({tableid: 'projects_tasks',
@@ -426,7 +426,7 @@ export function setconfigfunctions(){
         confirmModal(`Deseja realmente deletar?`).then((confirmed) => {
             if (confirmed) {                 
                 const JsonBodyData = {tableid: 'projects_tasks',type: 'delete',data:'',query: {Recid: parseInt(projs_ids)}}
-                fetch('http://localhost:3000/table_States', {
+                fetch('http://localhost:3001/table_States', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(JsonBodyData)
@@ -457,7 +457,7 @@ function setLineUpdate(row){
                               query:{Recid: refid},
                               data: {Recid: refid,companyId: name,mainContact: selectValue}}        
         
-        fetch('http://localhost:3000/table_states', {
+        fetch('http://localhost:3001/table_states', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },        
             body: JSON.stringify(JsonBodyData)
@@ -489,7 +489,7 @@ function setprojline(row){
                             query:{Recid: refid},
                             data: {Recid: refid,projId: name,refCompany: selectValue}}        
         
-        fetch('http://localhost:3000/table_states', {
+        fetch('http://localhost:3001/table_states', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },        
             body: JSON.stringify(JsonBodyData)
@@ -519,7 +519,7 @@ function serprojtaskline(row){
                             query:{Recid: refid},
                             data: {Recid: refid,taskname: name,projId: window.projs.projName}}        
         
-        fetch('http://localhost:3000/table_states', {
+        fetch('http://localhost:3001/table_states', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },        
             body: JSON.stringify(JsonBodyData)
@@ -539,7 +539,7 @@ function serprojtaskline(row){
 //preenchimento
 function fillSequences(){
     //sequencias numericas
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({tableid: 'parameters'})
@@ -554,7 +554,7 @@ function fillSequences(){
         document.getElementById('ticketcode').value  = configData.TicketSequence;
         document.getElementById('ticketcount').value = configData.TicketCode.replace(/#/g, "0");
 
-        fetch('http://localhost:3000/get_nextnum', {
+        fetch('http://localhost:3001/get_nextnum', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({tableid: 'users'})
@@ -564,7 +564,7 @@ function fillSequences(){
             document.getElementById('nextuser').value = data.code;             
         })
 
-        fetch('http://localhost:3000/get_nextnum', {
+        fetch('http://localhost:3001/get_nextnum', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({tableid: 'tickets'})
@@ -578,7 +578,7 @@ function fillSequences(){
 
 function fillCompanys(){
     //empresas
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -605,7 +605,7 @@ function fillCompanys(){
 
             const selection_field = row.querySelector('.custom_select_CP')    
 
-            fetch('http://localhost:3000/find', {
+            fetch('http://localhost:3001/find', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -642,7 +642,7 @@ function fillCompanys(){
 
 function fillprojects(){    
     //projetos
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -670,7 +670,7 @@ function fillprojects(){
 
             const selection_field = row.querySelector('.custom_select_PJ')    
 
-            fetch('http://localhost:3000/find', {
+            fetch('http://localhost:3001/find', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -697,7 +697,7 @@ function fillprojects(){
                 const checkbox = row.querySelector('.proj_checkbox');
                 checkbox.checked = !checkbox.checked;
 
-                fetch('http://localhost:3000/find', {
+                fetch('http://localhost:3001/find', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -728,7 +728,7 @@ function fillprojects_tasks(){
     //Tarefas de Projeto
     document.getElementById('proj_title').textContent = window.projs.projName;
 
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

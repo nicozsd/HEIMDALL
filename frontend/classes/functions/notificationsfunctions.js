@@ -37,7 +37,7 @@ function defaultForms(_FormId){
 
 export function fillusernotifications(){
     const parms = {tableid: 'notifications',query: {toUsers: window.currentUserData.user,read: 0}}
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ export function fillusernotifications(){
             
             const CreatorDiv = document.createElement('div');
             const parms = {tableid: 'users',query: {user: From}}
-            fetch('http://localhost:3000/find', {
+            fetch('http://localhost:3001/find', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -137,7 +137,7 @@ export function clearNotifications(Recids){
     console.log(JsonBodyData);
     
 
-    fetch('http://localhost:3000/table_States', {
+    fetch('http://localhost:3001/table_States', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(JsonBodyData)
@@ -158,7 +158,7 @@ export function checknotifications(refuser = null){
                    query: refuser != null ? {refuser,read: 0} 
                                           : {toUsers: window.currentUserData.user,read: 0}}
 
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(parms)
@@ -216,7 +216,7 @@ export function toggleMenuNotification(show) {
 }
 
 export function newNotification(_msg,_to,_level,form = "",reference = ""){
-    fetch('http://localhost:3000/get_nextRecid', {
+    fetch('http://localhost:3001/get_nextRecid', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },        
         body: JSON.stringify({tableid: 'notifications'})
@@ -237,7 +237,7 @@ export function newNotification(_msg,_to,_level,form = "",reference = ""){
         console.log(fulldata);
         console.log(JsonBodyData);        
 
-        fetch('http://localhost:3000/table_states', {
+        fetch('http://localhost:3001/table_states', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },        
             body: JSON.stringify(JsonBodyData)

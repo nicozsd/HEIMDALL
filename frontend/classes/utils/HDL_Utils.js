@@ -11,7 +11,7 @@ let z_index_counter = 10;
 
 //UTILIDADES
 export async function getuserName(_UserName) {
-    const response = await fetch('http://localhost:3000/find', {
+    const response = await fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -26,7 +26,7 @@ export async function getuserName(_UserName) {
 }
 
 export async function getprojName(projid) {
-    const response = await fetch('http://localhost:3000/find', {
+    const response = await fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export async function getprojName(projid) {
 }
 
 export async function getnextRecid(tableid) {
-    const response = await fetch('http://localhost:3000/get_nextRecid', {
+    const response = await fetch('http://localhost:3001/get_nextRecid', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },        
                 body: JSON.stringify({tableid: tableid})
@@ -57,7 +57,7 @@ export async function getnextRecid(tableid) {
 }
 
 export async function getParmCode(refCode) {
-    const response = await fetch('http://localhost:3000/find', {
+    const response = await fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -76,7 +76,7 @@ export async function getnextCode(Type) {
 
     const jsondata = {tableid: tableid, const: refInfo[0] ,code: refInfo[1]}
 
-    const response = await fetch('http://localhost:3000/get_nextnum', {
+    const response = await fetch('http://localhost:3001/get_nextnum', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(jsondata)

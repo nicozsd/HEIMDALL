@@ -178,7 +178,7 @@ async function getOpenTickets() {
   if (window.currentUserData.register_type === 'company')
     queryvalue = { ticket_company: window.currentUserData.companyId };
 
-  const response = await fetch('http://localhost:3000/find', {
+  const response = await fetch('http://localhost:3001/find', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ tableid: 'tickets', query: queryvalue })
@@ -212,7 +212,7 @@ async function getClosedTickets() {
   if (window.currentUserData.register_type === 'company')
     queryvalue = { ticket_company: window.currentUserData.companyId };
 
-  const response = await fetch('http://localhost:3000/find', {
+  const response = await fetch('http://localhost:3001/find', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ tableid: 'tickets', query: queryvalue })
@@ -239,7 +239,7 @@ async function getTotalProjTime() {
     if (window.currentUserData.register_type === 'company')
         queryvalue = { project_company: window.currentUserData.companyId };
 
-    const response = await fetch('http://localhost:3000/find', {
+    const response = await fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tableid: 'projects', query: queryvalue })
@@ -249,7 +249,7 @@ async function getTotalProjTime() {
     const projects = Proj_data.json || [];
 
     for (const proj of projects) {
-    const response = await fetch('http://localhost:3000/find', {
+    const response = await fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tableid: 'records', query: {projid: proj.projId}})

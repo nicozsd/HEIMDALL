@@ -28,7 +28,7 @@ export function setfunctions() {
         confirmModal(`Deseja Realmente deletar os IDs: ${users}`, users).then((confirmed) => {
             if (confirmed) {                 
                 const JsonBodyData = {tableid: 'users',type: 'delete',data:'',query: {user: users}}
-                fetch('http://localhost:3000/table_States', {
+                fetch('http://localhost:3001/table_States', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(JsonBodyData)
@@ -105,7 +105,7 @@ export function setfunctions() {
 
             const JsonBodyData = {tableid: 'users',type: 'insert',data: newuser}
                         
-            fetch('http://localhost:3000/table_States', {
+            fetch('http://localhost:3001/table_States', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(JsonBodyData)
@@ -165,7 +165,7 @@ function filter_Rows(){
 }
 
 export function FillUS(){
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -241,7 +241,7 @@ export function FillUS(){
             
                         const JsonBodyData = {tableid: 'users',type: 'update',data: editUser,query: {user: window.edituserdata.user}}                                                 
 
-                        fetch('http://localhost:3000/table_States', {
+                        fetch('http://localhost:3001/table_States', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(JsonBodyData)

@@ -149,7 +149,7 @@ async function fillhistory(date = null,userid = window.currentUserData.user) {
     const mainRow = document.getElementById('main_history');
     mainRow.innerHTML = "";
 
-    const response = await fetch('http://localhost:3000/find', {
+    const response = await fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -264,7 +264,7 @@ async function saveOrEdit(ref_recid = "") {
         };
         
     }
-    fetch('http://localhost:3000/table_States', {
+    fetch('http://localhost:3001/table_States', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -279,7 +279,7 @@ async function fillWorkers() {
     const mainRow = document.getElementById('workers_history');
     mainRow.innerHTML = "";
 
-    const response = await fetch('http://localhost:3000/find', {
+    const response = await fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -355,7 +355,7 @@ function deleteappointment(record){
     confirmModal(`Deseja realmente deletar este apontamento?`).then((confirmed) => {
         if (confirmed) {    
             const jsonData = {tableid: "records",type: 'delete',data: "", query: {Recid: record.Recid}}
-            fetch('http://localhost:3000/table_States', {
+            fetch('http://localhost:3001/table_States', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -414,7 +414,7 @@ function fillUtils(ref_proj = "",ref_task = "",ref_ticket = ""){
             else{
                 task.disabled = false                
 
-                fetch('http://localhost:3000/find', {
+                fetch('http://localhost:3001/find', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -447,7 +447,7 @@ function fillUtils(ref_proj = "",ref_task = "",ref_ticket = ""){
     projfunctions()
 
     //tickets
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -464,7 +464,7 @@ function fillUtils(ref_proj = "",ref_task = "",ref_ticket = ""){
     })
 
     //projetos e tarefas
-    fetch('http://localhost:3000/find', {
+    fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -612,7 +612,7 @@ async function gettotaltime(userid) {
     const priorDate = new Date();
     priorDate.setDate(today.getDate() - 30);
 
-    const response = await fetch('http://localhost:3000/find', {
+    const response = await fetch('http://localhost:3001/find', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

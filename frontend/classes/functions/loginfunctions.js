@@ -39,15 +39,15 @@ function switchUser() {
 }
 
 function filluser(user){    
-    window.currentUserData.user             = user.user;
-    window.currentUserData.user_name        = user.user_name;
-    window.currentUserData.acess_key        = user.acess_key;
-    window.currentUserData.email            = user.email            || null
-    window.currentUserData.contact_phone    = user.contact_phone    || null
-    window.currentUserData.register_type    = user.register_type
-    window.currentUserData.function         = user.function         || null
-    window.currentUserData.companyId        = user.companyId        || null
-    window.currentUserData.user_description = user.user_description || null
+    window.currentUserData.user             = user?.user;
+    window.currentUserData.user_name        = user?.user_name;
+    window.currentUserData.acess_key        = user?.acess_key;
+    window.currentUserData.email            = user?.email            || null
+    window.currentUserData.contact_phone    = user?.contact_phone    || null
+    window.currentUserData.register_type    = user?.register_type
+    window.currentUserData.function         = user?.function         || null
+    window.currentUserData.companyId        = user?.companyId       || null
+    window.currentUserData.user_description = user?.user_description || null
 }
 
 function login() {
@@ -66,7 +66,7 @@ function login() {
 
     const datafields = {email,senha,currentUser}    
 
-    fetch('http://localhost:3000/get_existlogin', {
+    fetch('http://localhost:3001/get_existlogin', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
