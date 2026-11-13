@@ -8,6 +8,30 @@ const window_container = document.getElementById('window_container');
 export const minimized_windows = [];
 
 let z_index_counter = 10;
+let activeDrag = null;
+
+document.addEventListener('pointermove', (event) => {
+    if (!activeDrag) return;
+    const { win, offsetX, offsetY } = activeDrag;
+    const x = Math.max(0, Math.min(window.innerWidth - 100, event.clientX - offsetX));
+    const y = Math.max(0, Math.min(window.innerHeight - 100, event.clientY - offsetY));
+    win.style.left = `${x}px`;
+    win.style.top = `${y}px`;
+});
+
+document.addEventListener('pointerup', () => { activeDrag = null; });
+
+const windowInstructions = {
+    Notification: 'Confira as atualizações e marque o que já foi lido.',
+    dashboard: 'Escolha o período e acompanhe os principais indicadores.',
+    profile: 'Revise seus dados e mantenha o perfil atualizado.',
+    tickets: 'Filtre chamados, abra os detalhes e acompanhe prioridades.',
+    records: 'Registre o tempo, confira os dados e salve o apontamento.',
+    user_list: 'Pesquise, selecione e gerencie os usuários cadastrados.',
+    settings: 'Escolha uma categoria e atualize os parâmetros com atenção.',
+    NewTicket: 'Preencha os campos obrigatórios para criar o chamado.',
+    ticket_details: 'Consulte o histórico e registre novas atualizações.'
+};
 
 //UTILIDADES
 export async function getuserName(_UserName) {
@@ -247,12 +271,16 @@ export function create_window(type, title, content_html, icon_class) {
 	win.dataset.type = type;
     win.dataset.title = title;
     win.dataset.icon = icon_class;
+	const instruction = windowInstructions[type] || 'Use os controles desta tela para concluir a tarefa.';
 	win.innerHTML = `
 		<div class="window_header">
-			<span class="window_title">${title}</span>
+			<div class="window_header__identity">
+				${icon_class ? `<i class="${icon_class}" aria-hidden="true"></i>` : ''}
+				<div><span class="window_header__eyebrow">Área de trabalho</span><span class="window_title">${title}</span><span class="window_header__hint sr-only">${instruction}</span></div>
+			</div>
 			<div class="window_controls">
-				<span class="minimize_btn">❏</span>
-				<span class="close_btn">✕</span>
+				<button type="button" class="minimize_btn" aria-label="Minimizar ${title}">—</button>
+				<button type="button" class="close_btn" aria-label="Fechar ${title}">✕</button>
 			</div>
 		</div>
 		<div class="window_content">${content_html}</div>
@@ -284,26 +312,11 @@ export function create_window(type, title, content_html, icon_class) {
 
 export function add_drag(win) {
     const header = win.querySelector('.window_header');
-    let offset_x = 0, offset_y = 0, is_dragging = false;
-
-    header.addEventListener('mousedown', (e) => {
-        is_dragging = true;
+    header.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('.window_controls')) return;
         const rect = win.getBoundingClientRect();
-        offset_x = e.clientX - rect.left;
-        offset_y = e.clientY - rect.top;
+        activeDrag = { win, offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top };
         bring_to_front(win);
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        if (!is_dragging) return;
-        const x = Math.max(0, Math.min(window.innerWidth - 100, e.clientX - offset_x));
-        const y = Math.max(0, Math.min(window.innerHeight - 100, e.clientY - offset_y));
-        win.style.left = `${x}px`;
-        win.style.top = `${y}px`;
-    });
-
-    document.addEventListener('mouseup', () => {
-        is_dragging = false;
     });
 }
 

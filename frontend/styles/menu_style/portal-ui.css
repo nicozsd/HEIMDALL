@@ -1,0 +1,153 @@
+:root {
+  --portal-surface: #172033;
+  --portal-surface-raised: #202b40;
+  --portal-field: #111a29;
+  --portal-ink: #f5f7fb;
+  --portal-muted: #adbbcf;
+  --portal-line: rgba(183, 202, 230, .22);
+  --portal-gold: #f4c542;
+  --portal-focus: #8bdcff;
+  --portal-radius: 14px;
+}
+
+/* Camada comum a todas as áreas: contraste, hierarquia e superfícies leves. */
+body { padding: 0; background: #0b1020; color: var(--portal-ink); }
+#window_container { padding: 94px 28px 28px; pointer-events: none; }
+#window_container .window { pointer-events: auto; }
+
+.window {
+  border: 1px solid var(--portal-line);
+  border-radius: var(--portal-radius);
+  background: var(--portal-surface);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, .32), 0 1px 0 rgba(255, 255, 255, .05) inset;
+  overflow: hidden;
+}
+
+.window_header {
+  min-height: 58px;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--portal-line);
+  background: linear-gradient(110deg, var(--portal-surface-raised), var(--portal-surface));
+  color: var(--portal-ink);
+  cursor: grab;
+}
+.window_header:active { cursor: grabbing; }
+.window_header__identity { display: flex; min-width: 0; align-items: center; gap: 9px; }
+.window_header__identity > i { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; border: 1px solid rgba(244,197,66,.48); border-radius: 8px; color: var(--portal-gold); font-size: .8rem; }
+.window_header__identity > div { display: block; min-width: 0; }
+.window_header__eyebrow { display: none; }
+.window_title { overflow: hidden; color: var(--portal-ink); font-size: .94rem; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+.window_controls { gap: 8px; }
+.window_controls button { display: grid; width: 28px; height: 28px; padding: 0; place-items: center; border: 1px solid var(--portal-line); border-radius: 7px; background: rgba(7,12,22,.36); color: var(--portal-ink); cursor: pointer; }
+.window_controls button:hover { border-color: var(--portal-gold); background: rgba(244,197,66,.14); color: var(--portal-gold); }
+
+.window_content { padding: 20px; background: linear-gradient(180deg, var(--portal-surface), var(--portal-field)); color: var(--portal-ink); }
+.window_content :is(input, select, textarea, .Filter_Input, .Property_Value, .custom_select, .custom_select_v2, .custom_select_v3, .input_AP, .ticket_form_input, .ticket_form_textarea, #Description_NewTK) { border: 1px solid var(--portal-line) !important; border-radius: 9px !important; background-color: var(--portal-field) !important; color: var(--portal-ink) !important; box-shadow: none; }
+.window_content :is(input, select, textarea, .Filter_Input, .Property_Value, .custom_select, .custom_select_v2, .custom_select_v3, .input_AP, .ticket_form_input, .ticket_form_textarea, #Description_NewTK)::placeholder { color: #8291a8; }
+.window_content :is(input, select, textarea, button):focus-visible { outline: 3px solid var(--portal-focus); outline-offset: 2px; }
+.window_content button:not(.window_controls button) { border-radius: 8px; }
+
+/* Componentes legados passam a herdar os mesmos tokens das preferências. */
+.form_container, .user_icon, .service_type, .role_selector, .form_input,
+.main_sidebar, .TK_Properties, .Properties_sidebar, .ticket_list_container,
+.ticket_form_container, .ticket_details_container, .add_note_section,
+.tabs_container, .tabs_sidebar, .tabs_content, .sequence_container,
+.sequence_input, .custom_select_CP, .custom_select_PJ, .ticket_item,
+.saved_entries_grid, .background_card, .entry_card, .user_grid_body,
+.user_grid_header, .user_grid_header_NF, .user_grid_row, .user_grid_row_NF,
+.Company_header, .Company_rows, .Company_row, .project_row, .task_row {
+  border-color: var(--portal-line) !important;
+  color: var(--portal-ink) !important;
+}
+.form_container, .user_icon, .service_type, .role_selector, .form_input,
+.main_sidebar, .TK_Properties, .Properties_sidebar, .ticket_form_container,
+.ticket_details_container, .add_note_section, .tabs_container, .tabs_sidebar,
+.tabs_content, .sequence_container, .sequence_input, .ticket_list_container,
+.saved_entries_grid, .background_card, .entry_card, .user_grid_body,
+.Company_rows { background-color: var(--portal-surface-raised) !important; }
+.profile_label, .sequence_title, .section_title, .ticket_form_title,
+.ticket_form_group label, .Property_Label, .filter_title { color: var(--portal-gold) !important; }
+.ticket_item, .user_grid_header, .user_grid_header_NF, .Company_header,
+.proj_header, .proj_task_header { background-color: var(--portal-field) !important; }
+.ticket_title, .ticket_meta, .ticket_props, .ticket_note_history, .details,
+.window_content .fr-element { color: var(--portal-ink) !important; }
+.window_content .fr-element { background: var(--portal-field) !important; border-color: var(--portal-line) !important; }
+.window_content :is(.modal_box, .modal_actions, .tox, .tox .tox-editor-container, .tox .tox-toolbar-overlord, .tox .tox-statusbar) { background: var(--portal-surface-raised) !important; color: var(--portal-ink) !important; border-color: var(--portal-line) !important; }
+.window_content :is(.ticket_info_section, .ticket_note_history, .TK_Properties, .Properties_sidebar, .note_actions, .action_pane_tickets, .Filter_sidebar) { color: var(--portal-ink) !important; border-color: var(--portal-line) !important; }
+.window_content :is(.action_pane_tickets, .Filter_sidebar, .ticket_info_section, .ticket_note_history) { background-color: var(--portal-surface-raised) !important; }
+
+/* Tipografia útil em telas antigas que declaram tamanhos fixos em px. */
+body.a11y-large-text .window_content :is(p, span, label, a, button, input, select, textarea, td, th, li, .filter_title, .card_label, .ticket_meta, .ticket_props, .entry_period) { font-size: 1em !important; }
+body.a11y-large-text .window_content :is(input, select, textarea, button) { min-height: 2.5em; }
+body.a11y-readable-font .window, body.a11y-readable-font .window * { font-family: Verdana, Arial, sans-serif !important; }
+body.a11y-reduce-motion .dashboard_card:hover, body.a11y-reduce-motion .ticket_item:hover { transform: none; box-shadow: none; }
+
+.main_title, .ticket_form_title, .chart_title { color: var(--portal-ink) !important; letter-spacing: -.02em; }
+.dashboard_container { width: 100%; max-width: none; padding: 0; }
+.dashboard_status { min-height: 1.25em; margin: -4px 0 16px; color: var(--portal-muted); font-size: .82rem; }
+.dashboard_status.is-error { color: #ff9393; font-weight: 700; }
+.dashboard_card, .dashboard_chart_section, .time_entry_grid, .ticket_form_container, .ticket_list_container, .ticket_details_container, .add_note_section { border: 1px solid var(--portal-line); background: var(--portal-surface-raised) !important; box-shadow: none; }
+.dashboard_card:hover, .ticket_item:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,.2); }
+.ticket_item { border-color: var(--portal-line); background: var(--portal-field); }
+.ticket_list_container { padding: 14px; }
+.user_grid_container, .user_grid_body, .user_grid_header, .user_grid_row, .user_grid_header_NF, .user_grid_row_NF { border-color: var(--portal-line) !important; }
+.user_grid_header, .user_grid_header_NF { background: var(--portal-field) !important; color: var(--portal-gold) !important; }
+.user_grid_row, .user_grid_row_NF { background: transparent !important; color: var(--portal-ink) !important; }
+.user_grid_row:hover, .user_grid_row_NF:hover { background: rgba(139,220,255,.09) !important; }
+.tabs_container_AP, .config_tabs { border-bottom-color: var(--portal-line); }
+.tab_btn { color: var(--portal-muted); }
+.tab_btn.active { color: var(--portal-gold); }
+
+/* Apontamentos: menos caixas aninhadas e leitura cronológica mais clara. */
+.appointment_selections { width: 100%; max-width: none; margin: 0; color: var(--portal-ink); }
+.tabs_container_AP { gap: 8px; margin: 0 0 22px; overflow-x: auto; }
+.tab_btn { flex: 0 0 auto; padding: 8px 10px; border: 1px solid transparent; border-radius: 8px; background: rgba(255,255,255,.06); font-size: .74rem; transition: background .18s ease, border-color .18s ease, color .18s ease; transform: none; }
+.tab_btn:hover { transform: none; border-color: var(--portal-line); background: rgba(139,220,255,.1); }
+.tab_btn.active { border-bottom: 1px solid var(--portal-gold); border-color: rgba(244,197,66,.55); background: rgba(244,197,66,.11); }
+.filter_history { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; color: var(--portal-muted); }
+.saved_entries_grid { padding: 10px; border-color: var(--portal-line); background: rgba(7,14,25,.42); }
+.background_card { width: 100%; margin: 0 0 10px; padding: 12px 14px; border: 1px solid var(--portal-line); border-radius: 10px; background: var(--portal-surface-raised); }
+.background_card:hover { transform: none; border-color: rgba(244,197,66,.62); }
+.entry_card { padding: 10px 0 0; border: 0; border-top: 1px solid var(--portal-line); border-radius: 0; background: transparent; }
+.header_card_history { align-items: center; gap: 12px; color: var(--portal-ink); }
+.entry_header { padding: 8px 0; color: var(--portal-ink); }
+.entry_period { color: var(--portal-muted); }
+.delete_record, .edit_record { padding: 6px; border-radius: 6px; }
+.delete_record:hover, .edit_record:hover { color: var(--portal-gold); background: rgba(244,197,66,.13); }
+
+/* Listas e configurações: área de ação distinta, tabelas estáveis e conteúdo aproveitado. */
+.window_user_list .window_content { display: flex; flex-direction: column; }
+.filter_body { display: grid; grid-template-columns: auto 92px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 10px; margin: 0 0 10px; border: 1px solid var(--portal-line); border-radius: 10px; background: rgba(7,14,25,.36); }
+.action_pane_users, .action_pane_company { gap: 8px; margin: 0 0 12px; }
+.user_grid_button, .company_button { min-height: 34px; border: 1px solid var(--portal-line); background: rgba(255,255,255,.08); }
+.user_grid_button:hover, .company_button:hover { background: rgba(139,220,255,.15); }
+.user_grid_container { flex: 1; max-height: none; margin: 0; }
+.user_grid_body, .Company_rows { border-color: var(--portal-line); background: rgba(7,14,25,.34); }
+.user_grid_header, .user_grid_header_NF, .Company_header, .proj_header, .proj_task_header { background: var(--portal-field) !important; color: var(--portal-gold) !important; border-color: var(--portal-line) !important; }
+.user_grid_row, .user_grid_row_NF, .Company_row, .project_row, .task_row { background: transparent !important; border-color: var(--portal-line) !important; }
+
+.tabs_container { gap: 14px; padding: 10px; border: 1px solid var(--portal-line); border-radius: 12px; background: rgba(7,14,25,.32); }
+.tabs_sidebar { width: 210px; padding: 8px; border-right: 1px solid var(--portal-line); background: transparent; }
+.tab_button { border: 1px solid transparent; border-radius: 8px; background: transparent; }
+.tab_button:hover { background: rgba(139,220,255,.1); }
+.tab_button.active { border-color: rgba(244,197,66,.45); background: rgba(244,197,66,.12); color: var(--portal-gold); }
+.tabs_content { padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,.025); }
+.tab_panel { max-width: 760px; padding: 10px; }
+.group_company, .group_proj, .group_proj_task { width: min(100%, 620px); margin: 12px 0; }
+.Company_header, .proj_header, .proj_task_header { border-radius: 9px 9px 0 0; }
+.Company_rows { border-radius: 0 0 9px 9px; }
+
+@media (max-width: 620px) {
+  .filter_body { grid-template-columns: 1fr auto; }
+  .filter_body .Filter_Input { grid-column: 1 / -1; }
+  .tabs_container { flex-direction: column; }
+  .tabs_sidebar { width: 100%; flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--portal-line); }
+}
+
+@media (max-width: 720px) {
+  #window_container { padding: 82px 12px 12px; }
+  .window { min-width: min(350px, calc(100vw - 24px)); }
+  .window_header { min-height: 76px; padding: 11px 12px; }
+  .window_header__hint { white-space: normal; line-height: 1.25; }
+  .window_content { padding: 14px; }
+}

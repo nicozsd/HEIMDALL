@@ -1,6 +1,6 @@
 import {confirmModal, warningModal} from '../messages/modalLOG.js'
 
-import { getnextRecid } from '../utils/HDL_Utils.js'
+import { getnextRecid } from '../utils/HDL_Utils.js?v=3'
 import { fillTickets } from './ticketsfunctions.js';
 
 export function canCloseWindow() {    

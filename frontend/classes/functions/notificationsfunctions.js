@@ -1,4 +1,4 @@
-import { today, close_window } from "../utils/HDL_Utils.js";
+import { today, close_window } from "../utils/HDL_Utils.js?v=3";
 
 let intervalId = null
 

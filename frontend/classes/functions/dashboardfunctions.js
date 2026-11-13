@@ -1,74 +1,118 @@
-import { ISO2Date,Date2ISO } from "../utils/HDL_Utils.js";
+import { ISO2Date,Date2ISO } from "../utils/HDL_Utils.js?v=3";
 
 let initDate = new Date();
 let endDate = new Date();
-endDate.setDate(endDate.getDate() - 7);
+let ticketChart = null;
+let hoursChart = null;
+let projectHours = [];
+
+function chartPalette() {
+  const styles = getComputedStyle(document.body);
+  return {
+    ink: styles.getPropertyValue('--portal-ink').trim() || '#f5f7fb',
+    muted: styles.getPropertyValue('--portal-muted').trim() || '#adbbcf',
+    line: styles.getPropertyValue('--portal-line').trim() || 'rgba(183, 202, 230, .22)',
+    gold: styles.getPropertyValue('--portal-gold').trim() || '#f4c542',
+    focus: styles.getPropertyValue('--portal-focus').trim() || '#8bdcff',
+    field: styles.getPropertyValue('--portal-field').trim() || '#111a29',
+    reducedMotion: document.body.classList.contains('a11y-reduce-motion')
+  };
+}
+
+function setRangeFromFilter() {
+  const filter = document.getElementById('period_filter');
+  const period = filter?.value || '7';
+  endDate = new Date();
+  endDate.setHours(23, 59, 59, 999);
+  initDate = new Date(0);
+  if (period !== 'all') {
+    initDate = new Date();
+    initDate.setHours(0, 0, 0, 0);
+    initDate.setDate(initDate.getDate() - Number(period) + 1);
+  }
+}
+
+function parseRecordDate(value) {
+  if (!value) return null;
+  const text = String(value);
+  const match = text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  const date = match ? new Date(Number(match[3]), Number(match[2]) - 1, Number(match[1])) : new Date(text);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function toMinutes(value) {
+  const text = String(value || '').trim();
+  const clock = text.match(/^(\d+):(\d{1,2})$/);
+  if (clock) return Number(clock[1]) * 60 + Number(clock[2]);
+  const verbose = text.match(/(\d+)\s*h(?:\s*(\d+)\s*m?)?/i);
+  if (verbose) return Number(verbose[1]) * 60 + Number(verbose[2] || 0);
+  const decimal = Number(text.replace(',', '.'));
+  return Number.isFinite(decimal) ? Math.round(decimal * 60) : 0;
+}
 
 export async function basicDashboard() {
   const ctx1 = document.getElementById('tickets_chart');
   const ctx2 = document.getElementById('hours_chart');
-  
-  const openTickets   = await getOpenTickets();
-  const closedTickets = await getClosedTickets();
-  const totalHours    = await getTotalProjTime(); 
+  const status = document.getElementById('dashboard_status');
+  setRangeFromFilter();
+  if (status) status.textContent = 'Atualizando indicadores…';
+  let openTickets;
+  let closedTickets;
+  let totalHours;
+  try {
+    [openTickets, closedTickets, totalHours] = await Promise.all([getOpenTickets(), getClosedTickets(), getTotalProjTime()]);
+  } catch (error) {
+    console.error('Erro ao atualizar dashboard:', error);
+    if (status) { status.textContent = 'Não foi possível carregar os indicadores. Tente novamente.'; status.classList.add('is-error'); }
+    return;
+  }
+  if (status) { status.textContent = 'Indicadores atualizados para o período selecionado.'; status.classList.remove('is-error'); }
 
   const totalTickets  = openTickets + closedTickets;
 
   const openPercent   = totalTickets > 0 ? ((openTickets / totalTickets) * 100).toFixed(0) : 0;
   const closedPercent = totalTickets > 0 ? ((closedTickets / totalTickets) * 100).toFixed(0) : 0;
     
-  const openVariation   = +15;  // exemplo positivo
-  const closedVariation = -10; // exemplo negativo
-  const hoursVariation  = +5;  // exemplo positivo
-
-  function getDateFilter() {
-    const diff = document.getElementById('period_filter').value;
-
-    const today = new Date();
-    const priorDate = new Date();
-
-    if (diff !== 'all') {
-      priorDate.setDate(today.getDate() - parseInt(diff));
-    }
-
-    const minDate = diff === 'all' ? null : priorDate.toISOString().split('T')[0];
-    const maxDate = today.toISOString().split('T')[0];
-
-    return { minDate, maxDate };
-  }
+  const openVariation   = 0;
+  const closedVariation = 0;
+  const hoursVariation  = 0;
 
   function fillValues() {
     document.getElementById('open_tickets').innerHTML = `${openTickets} <span class="percent">(${openPercent}%)</span>`;
 
     const openVarEl = document.getElementById('open_tickets_variation');
-    openVarEl.textContent = `${openVariation > 0 ? '↑' : '↓'} ${Math.abs(openVariation)}% vs último período`;
-    openVarEl.className = `variation ${openVariation > 0 ? 'up' : 'down'}`;
+    openVarEl.textContent = 'Chamados abertos no período selecionado';
+    openVarEl.className = 'variation';
 
     document.getElementById('closed_tickets').innerHTML = `${closedTickets} <span class="percent">(${closedPercent}%)</span>`;
 
     const closedVarEl = document.getElementById('closed_tickets_variation');
-    closedVarEl.textContent = `${closedVariation > 0 ? '↑' : '↓'} ${Math.abs(closedVariation)}% vs último período`;
-    closedVarEl.className = `variation ${closedVariation > 0 ? 'up' : 'down'}`;
+    closedVarEl.textContent = 'Chamados concluídos no período selecionado';
+    closedVarEl.className = 'variation';
 
     document.getElementById('total_hours').innerHTML = `${totalHours} <span class="percent"></span>`;
 
     const hoursVarEl = document.getElementById('total_hours_variation');
-    hoursVarEl.textContent = `${hoursVariation > 0 ? '↑' : '↓'} ${Math.abs(hoursVariation)}% vs último período`;
-    hoursVarEl.className = `variation ${hoursVariation > 0 ? 'up' : 'down'}`;
+    hoursVarEl.textContent = 'Horas registradas no período selecionado';
+    hoursVarEl.className = 'variation';
   }
 
   function generateCharts() {
-    new Chart(ctx1, {
+    const palette = chartPalette();
+    ticketChart?.destroy();
+    hoursChart?.destroy();
+    if (!window.Chart) return;
+    ticketChart = new Chart(ctx1, {
       type: 'doughnut',
       data: {
         labels: ['Abertos', 'Concluídos'],
         datasets: [{
           data: [openTickets, closedTickets],
           backgroundColor: [
-            'rgba(54, 99, 235, 0.7)',    
-            'rgba(255, 205, 86, 0.7)'   
+            palette.focus,
+            palette.gold
           ],
-          borderColor: ['rgba(54, 99, 235, 1)', 'rgba(255, 205, 86, 1)'],
+          borderColor: [palette.ink, palette.ink],
           borderWidth: 2,
           hoverOffset: 20
         }]
@@ -80,15 +124,15 @@ export async function basicDashboard() {
           legend: {
             position: 'bottom',
             labels: {
-              color: '#444',
+              color: palette.ink,
               font: { size: 14, weight: '600' }
             }
           },
           tooltip: {
-            backgroundColor: '#fff',
-            titleColor: '#3641eb',
-            bodyColor: '#222',
-            borderColor: '#3641eb',
+            backgroundColor: palette.field,
+            titleColor: palette.gold,
+            bodyColor: palette.ink,
+            borderColor: palette.line,
             borderWidth: 1,
             padding: 8,
             cornerRadius: 4,
@@ -97,20 +141,20 @@ export async function basicDashboard() {
           title: { display: false }
         },
         animation: {
-          duration: 900,
+          duration: palette.reducedMotion ? 0 : 900,
           easing: 'easeOutCubic'
         }
       }
     });
     
-    new Chart(ctx2, {
+    hoursChart = new Chart(ctx2, {
       type: 'bar',
       data: {
-        labels: ['Projeto A', 'Projeto B', 'Projeto C'],
+        labels: projectHours.length ? projectHours.map((project) => project.label) : ['Sem apontamentos no período'],
         datasets: [{
           label: 'Horas',
-          data: [40, 60, 46],
-          backgroundColor: 'rgba(54, 99, 235, 0.8)',
+          data: projectHours.length ? projectHours.map((project) => Number((project.minutes / 60).toFixed(2))) : [0],
+          backgroundColor: palette.focus,
           borderRadius: 4,
           borderSkipped: false
         }]
@@ -119,18 +163,18 @@ export async function basicDashboard() {
         responsive: true,
         scales: {
           x: {
-            ticks: { color: '#444', font: { size: 14, weight: '600' } },
+            ticks: { color: palette.ink, font: { size: 14, weight: '600' } },
             grid: { display: false },
             border: { display: false }
           },
           y: {
             ticks: {
-              color: '#444',
+              color: palette.ink,
               font: { size: 14, weight: '600' },
               callback: val => val + 'h'
             },
             grid: {
-              color: 'rgba(0,0,0,0.05)',
+              color: palette.line,
               borderDash: [4, 6]
             },
             beginAtZero: true
@@ -139,10 +183,10 @@ export async function basicDashboard() {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#fff',
-            titleColor: '#3641eb',
-            bodyColor: '#222',
-            borderColor: '#3641eb',
+            backgroundColor: palette.field,
+            titleColor: palette.gold,
+            bodyColor: palette.ink,
+            borderColor: palette.line,
             borderWidth: 1,
             padding: 8,
             cornerRadius: 4,
@@ -150,26 +194,22 @@ export async function basicDashboard() {
           }
         },
         animation: {
-          duration: 1000,
+          duration: palette.reducedMotion ? 0 : 1000,
           easing: 'easeOutCubic'
         }
       }
     });
   }
 
-  document.getElementById('period_filter').onchange = () => {
-    const { minDate, maxDate } = getDateFilter();
-    initDate = new Date(minDate);
-    endDate  = new Date(maxDate);
-
-    console.log('entra');    
-
-    basicDashboard(); 
-  };
+  document.getElementById('period_filter').onchange = () => basicDashboard();
 
   fillValues();
   generateCharts();
 }
+
+window.addEventListener('heimdallaccessibilitychange', () => {
+  if (document.getElementById('tickets_chart') && document.getElementById('hours_chart')) basicDashboard();
+});
 
 async function getOpenTickets() {
   let count = 0;
@@ -188,9 +228,9 @@ async function getOpenTickets() {
   const records = data.json || [];
 
   for (const record of records) {
-    const createdDate = new Date(Date2ISO(record.createdDate)) || null;
-    const updateDate  = new Date(Date2ISO(record.updateDate))  || null;
-    const closedDate  = record.ClosedDate;    
+    const createdDate = parseRecordDate(record.createdDate);
+    const updateDate  = parseRecordDate(record.updateDate);
+    const closedDate  = record.closedDate || record.ClosedDate;
 
     const isInPeriod = (
       (createdDate && createdDate >= initDate && createdDate <= endDate) ||
@@ -222,7 +262,7 @@ async function getClosedTickets() {
   const records = data.json || [];
 
   for (const record of records) {    
-    const closedDate = new Date(Date2ISO(record.closedDate))  || null;
+    const closedDate = parseRecordDate(record.closedDate || record.ClosedDate);
 
     if (closedDate && closedDate >= initDate && closedDate <= endDate) {
       count++;
@@ -233,59 +273,29 @@ async function getClosedTickets() {
 }
 
 async function getTotalProjTime() {
-    let totalMinutes = 0;
-    let queryvalue = {};
-
-    if (window.currentUserData.register_type === 'company')
-        queryvalue = { project_company: window.currentUserData.companyId };
-
-    const response = await fetch('http://localhost:3001/find', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tableid: 'projects', query: queryvalue })
+    const query = window.currentUserData.register_type === 'company'
+      ? { project_company: window.currentUserData.companyId }
+      : {};
+    const projectResponse = await fetch('http://localhost:3001/find', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tableid: 'projects', query })
     });
-
-    const Proj_data = await response.json();
-    const projects = Proj_data.json || [];
-
-    for (const proj of projects) {
-    const response = await fetch('http://localhost:3001/find', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tableid: 'records', query: {projid: proj.projId}})
+    if (!projectResponse.ok) throw new Error('Falha ao consultar projetos.');
+    const projects = (await projectResponse.json()).json || [];
+    const summaries = await Promise.all(projects.map(async (project) => {
+      const response = await fetch('http://localhost:3001/find', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tableid: 'records', query: { projid: project.projId } })
       });
-    
-      const record_data = await response.json();
-      const records = record_data.json || [];
-
-      for (const ref_record of records) {
-        if (ref_record.total) {
-          const total = ref_record.total;
-      
-          if (typeof total === 'string' && total.includes(':')) {            
-            const parts = total.split(':');
-            const h = parseInt(parts[0], 10);
-            const m = parseInt(parts[1], 10);
-            if (!isNaN(h) && !isNaN(m)) {
-              totalMinutes += h * 60 + m;
-            } else {
-              console.warn('Erro ao converter tempo (hh:mm):', total);
-            }
-          } else if (!isNaN(parseFloat(total))) {            
-            const decimal = parseFloat(total);
-            totalMinutes += Math.round(decimal * 60);
-          } else {
-            console.warn('Formato desconhecido de tempo:', total);
-          }
-        }
-      }      
-    }   
-
-    const hours = Math.floor(totalMinutes / 60);
-    const mins = Math.floor(totalMinutes % 60);
-
-    const hh = String(hours).padStart(2, '0');
-    const mm = String(mins).padStart(2, '0');
-
-    return `${hh}:${mm}`;  
+      if (!response.ok) throw new Error('Falha ao consultar apontamentos.');
+      const records = (await response.json()).json || [];
+      const minutes = records
+        .filter((record) => {
+          const date = parseRecordDate(record.refdate || record.createdDate || record.date);
+          return date && date >= initDate && date <= endDate;
+        })
+        .reduce((total, record) => total + toMinutes(record.total), 0);
+      return { label: project.projName || project.projId || 'Projeto sem nome', minutes };
+    }));
+    projectHours = summaries.filter((project) => project.minutes > 0);
+    const totalMinutes = projectHours.reduce((total, project) => total + project.minutes, 0);
+    return `${String(Math.floor(totalMinutes / 60)).padStart(2, '0')}:${String(totalMinutes % 60).padStart(2, '0')}`;
 }

@@ -36,6 +36,7 @@ window.TKType = {
 const dashboard_html = `
 <div class="dashboard_container">
   <h2 class="main_title">Dashboard de Projetos</h2>
+  <p class="dashboard_status" id="dashboard_status" role="status" aria-live="polite">Carregando indicadores…</p>
 
   <div class="dashboard_top">
     <div class="dashboard_filters">

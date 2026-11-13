@@ -1,4 +1,4 @@
-import { getuserName, dateName, getprojName, Date2ISO, ISO2Date, getnextRecid } from "../utils/HDL_Utils.js"
+import { getuserName, dateName, getprojName, Date2ISO, ISO2Date, getnextRecid } from "../utils/HDL_Utils.js?v=3"
 import {confirmModal, warningModal} from '../messages/modalLOG.js'
 
 //principais

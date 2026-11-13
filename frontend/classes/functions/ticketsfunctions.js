@@ -1,4 +1,4 @@
-import { getuserName, create_window, today, getnextCode, getnextRecid, close_window } from '../utils/HDL_Utils.js'
+import { getuserName, create_window, today, getnextCode, getnextRecid, close_window } from '../utils/HDL_Utils.js?v=3'
 import {newNotification, checknotifications} from './notificationsfunctions.js'
 import {confirmModal, warningModal} from '../messages/modalLOG.js'
 

@@ -1,4 +1,4 @@
-import { create_btn,minimized_windows } from "../utils/HDL_Utils.js";
+import { create_btn,minimized_windows } from "../utils/HDL_Utils.js?v=3";
 import { checknotifications } from "./notificationsfunctions.js";
 
 const Out_menuToggle      = document.getElementById('menu_toggle');
@@ -41,6 +41,7 @@ Out_sidebarMenuHist?.addEventListener('mouseleave', () => {
 function animateBackground() {
     const canvas = document.getElementById('background_canvas');
     const ctx = canvas.getContext('2d');
+    let animationFrame = null;
 
     function resizeCanvas() {
         canvas.width = window.innerWidth;
@@ -84,8 +85,24 @@ function animateBackground() {
             }
         });
 
-        requestAnimationFrame(draw);
+        animationFrame = (document.body.classList.contains('a11y-reduce-motion') || document.hidden)
+            ? null
+            : requestAnimationFrame(draw);
     }
+
+    window.addEventListener('heimdallaccessibilitychange', () => {
+        if (document.body.classList.contains('a11y-reduce-motion')) {
+            if (animationFrame !== null) cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+            draw();
+        } else if (animationFrame === null) {
+            draw();
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && animationFrame === null && !document.body.classList.contains('a11y-reduce-motion')) draw();
+    });
 
     draw();
 }

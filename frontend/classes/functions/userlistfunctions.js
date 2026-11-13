@@ -1,4 +1,4 @@
-import { close_window, create_window, getnextCode } from "../utils/HDL_Utils.js";
+import { close_window, create_window, getnextCode } from "../utils/HDL_Utils.js?v=3";
 import {confirmModal, warningModal} from '../messages/modalLOG.js'
 import { fillCompanys } from "./profileFunctions.js";
 

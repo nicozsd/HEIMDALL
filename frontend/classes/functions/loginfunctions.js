@@ -4,6 +4,7 @@ const canvas = document.getElementById("eyeCanvas");
 const ctx = canvas.getContext("2d");
 let isOpen = false;
 let blinkInterval;
+let eyeAnimationFrame = null;
 const eyeX = 20, eyeY = 20;
 let pupilX = 20, pupilY = 20;
 let mouseX = 20, mouseY = 20;
@@ -50,7 +51,8 @@ function filluser(user){
     window.currentUserData.user_description = user?.user_description || null
 }
 
-function login() {
+function login(event) {
+    event?.preventDefault();
     const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value.trim();
     const errorMsg = document.getElementById("errorMsg");
@@ -141,7 +143,7 @@ function animateBackground() {
             }
         });
 
-        requestAnimationFrame(draw);
+        if (!document.body.classList.contains('a11y-reduce-motion')) requestAnimationFrame(draw);
     }
 
     draw();
@@ -182,6 +184,8 @@ function toggleEye() {
 }
 
 function startBlinking() {
+    clearInterval(blinkInterval);
+    if (document.body.classList.contains('a11y-reduce-motion')) return;
     blinkInterval = setInterval(() => {
         drawEye(false);
         setTimeout(() => {
@@ -191,7 +195,8 @@ function startBlinking() {
 }
 
 function animate() {
-    requestAnimationFrame(animate);
+    if (document.body.classList.contains('a11y-reduce-motion')) { eyeAnimationFrame = null; return; }
+    eyeAnimationFrame = requestAnimationFrame(animate);
     if (isOpen) drawEye(true);
 }
 
@@ -211,14 +216,29 @@ document.addEventListener('DOMContentLoaded', () => {
     logoMain.src = "../icons/Heindall/heindall_black.png";
 
     document.querySelector('.page_corner')?.addEventListener('click', switchUser);
-    document.querySelector('button')?.addEventListener('click', login);
+    document.getElementById('loginContainer')?.addEventListener('submit', login);
     document.getElementById('email')?.addEventListener('input', clearError);
     document.getElementById('senha')?.addEventListener('input', clearError);
     document.querySelector('.page_corner').addEventListener('click', function () {
         this.classList.toggle('rotated');
     });
 
-    canvas.addEventListener("click", toggleEye);        
+    canvas.addEventListener("click", toggleEye);
+    canvas.addEventListener("keydown", (event) => {
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); toggleEye(); }
+    });
+
+    window.addEventListener('heimdallaccessibilitychange', () => {
+        if (document.body.classList.contains('a11y-reduce-motion')) {
+            clearInterval(blinkInterval);
+            if (eyeAnimationFrame !== null) cancelAnimationFrame(eyeAnimationFrame);
+            eyeAnimationFrame = null;
+            drawEye(isOpen);
+        } else {
+            startBlinking();
+            if (eyeAnimationFrame === null) animate();
+        }
+    });
 
     document.addEventListener("mousemove", e => {
         const container = document.getElementById("loginContainer");
@@ -243,6 +263,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     animateBackground();
     drawEye(true);
-    startBlinking();  
+    startBlinking();
     animate();
 });
